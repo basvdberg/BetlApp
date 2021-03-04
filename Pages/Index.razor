@@ -1,0 +1,100 @@
+﻿@page "/"
+
+@using BetlApp.Data
+@inject MudBlazor.ISnackbar snackBar
+@inject BetlApp.Services.IObj_DefService obj_DefService
+
+<MudCard Elevation="25">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Add / Edit Obj_def</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudTextField @bind-Value="obj_def.FirstName" Label="First Name" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+        <MudTextField @bind-Value="obj_def.LastName" Label="Last Name" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+        <MudTextField @bind-Value="obj_def.PhoneNumber" Label="Phone Number" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+        <br />
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Save">Save Obj_def</MudButton>
+    </MudCardContent>
+</MudCard>
+<br />
+<MudTable Elevation="25" Items="GetObj_defs()" Filter="new Func<Obj_def, bool>(Search)" @bind-Obj_def="obj_def">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">obj_def</MudText>
+        <MudToolBarSpacer />
+        <MudTextField @bind-Value="searchString" Placeholder="Search for Obj_def..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>First Name</MudTh>
+        <MudTh>Last Name</MudTh>
+        <MudTh>Phone Number</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="FirstName">@context.FirstName</MudTd>
+        <MudTd DataLabel="LastName">@context.LastName</MudTd>
+        <MudTd DataLabel="PhoneNumber">@context.PhoneNumber</MudTd>
+        <MudTd DataLabel="">
+            <MudFab @onclick="@(()=>Edit(@context.Id))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+            <MudFab @onclick="@(()=>Delete(@context.Id))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code{
+    private bool hover = false;
+    private string searchString = "";
+
+    private Obj_def obj_def = new Obj_def();
+    private List<Obj_def> obj_defs = new List<Obj_def>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        GetObj_defs();
+    }
+
+    private List<Obj_def> GetObj_defs()
+    {
+        obj_defs = obj_DefService.GetObj_Defs();
+        return obj_defs;
+    }
+    private bool Search(Obj_def obj_def)
+    {
+        if (string.IsNullOrWhiteSpace(searchString) || obj_def is null  ) return true;
+        try {
+            if (obj_def.FirstName.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+                || obj_def.LastName.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+                || obj_def.PhoneNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+        catch
+        {
+            // eg some field is null 
+        }
+
+
+        return false;
+    }
+
+    private void Save()
+    {
+        obj_DefService.SaveObj_Def(obj_def);
+        obj_def = new Obj_def();
+        snackBar.Add("Obj_def Saved.", Severity.Success);
+        GetObj_defs();
+    }
+    private void Edit(int id)
+    {
+        obj_def = obj_defs.FirstOrDefault(c => c.Id == id);
+    }
+    private void Delete(int id)
+    {
+        obj_DefService.DeleteObj_Def(id);
+        snackBar.Add("Obj_def Deleted.", Severity.Success);
+        GetObj_defs();
+    }
+}
