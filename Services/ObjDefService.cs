@@ -9,15 +9,15 @@ namespace BetlApp.Services
 {
     public class ObjDefService : IObjDefService
     {
-        private readonly BetlAppContext _dbContext;
-        public ObjDefService(BetlAppContext context)
+        private readonly BetlContext _dbContext;
+        public ObjDefService(BetlContext context)
         {
             _dbContext = context;
         }
 
         public void DeleteObjDef(int id)
         {
-            var objDef = _dbContext.ObjDefs.FirstOrDefault(x => x.Id == id);
+            var objDef = _dbContext.ObjDefs.FirstOrDefault(x => x.ObjDefId == id);
             if (objDef != null)
             {
                 _dbContext.ObjDefs.Remove(objDef);
@@ -26,7 +26,7 @@ namespace BetlApp.Services
         }
         public ObjDef GetObjDefById(int id)
         {
-            var objDef = _dbContext.ObjDefs.SingleOrDefault(x => x.Id == id);
+            var objDef = _dbContext.ObjDefs.SingleOrDefault(x => x.ObjDefId == id);
             return objDef;
         }
 
@@ -36,7 +36,7 @@ namespace BetlApp.Services
         }
         public void SaveObjDef(ObjDef objDef)
         {
-            if (objDef.Id == 0) _dbContext.ObjDefs.Add(objDef);
+            if (objDef.ObjDefId == 0) _dbContext.ObjDefs.Add(objDef);
             else _dbContext.ObjDefs.Update(objDef);
             _dbContext.SaveChanges();
         }

@@ -7,9 +7,14 @@ namespace BetlApp.Data
 {
     public partial class ObjType
     {
+        public ObjType(int i)
+        {
+            ObjTypeId = i;
+        }
         public ObjType()
         {
             ObjDefs = new HashSet<ObjDef>();
+            Objs = new HashSet<Obj>();
         }
 
         public int ObjTypeId { get; set; }
@@ -19,5 +24,6 @@ namespace BetlApp.Data
         public string RecordUser { get; set; }
 
         public virtual ICollection<ObjDef> ObjDefs { get; set; }
+        public virtual ICollection<Obj> Objs { get; set; }
     }
 }

@@ -34,7 +34,7 @@ namespace BetlApp
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddMudServices();
-            services.AddDbContext<BetlAppContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<BetlContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllersWithViews();
             services.AddScoped<IObjDefService, ObjDefService>();
         }

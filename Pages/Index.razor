@@ -4,6 +4,41 @@
 @inject MudBlazor.ISnackbar snackBar
 @inject BetlApp.Services.IObjDefService objDefService
 
+<MudTable Hover="true" SortLabel="Sort by" Items="GetObjDefs()" Filter="new Func<ObjDef, bool>(Search)" @bind-Obj_def="objDef" RowsPerPage="5" Dense="true">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Object definitions</MudText>
+        <MudToolBarSpacer />
+        <MudTextField @bind-Value="searchString" Placeholder="Search for object definition..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Parent object</MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<ObjDef, object>(x=>x.ObjName)">Object name</MudTableSortLabel></MudTh>
+        <MudTh>Object type</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="parent">@context.ParentObj</MudTd>
+
+        <MudTd DataLabel="object name">@context.ObjName</MudTd>
+
+        <MudItem xs="12" sm="6" md="4">
+            <MudSelect @bind-Value="context.ObjTypeId" Disabled="true" Dense="true">
+                <MudSelectItem T="int" Value="@(10)">table</MudSelectItem>
+                <MudSelectItem T="int" Value="@(20)">view</MudSelectItem>
+            </MudSelect>
+        </MudItem>
+
+        <MudTd DataLabel="">
+            <MudFab @onclick="@(() => Edit(@context.ObjDefId))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+            <MudFab @onclick="@(() => Delete(@context.ObjDefId))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[]{50, 100}"  />
+    </PagerContent>
+
+</MudTable>
+<br />
 <MudCard Elevation="25">
     <MudCardHeader>
         <CardHeaderContent>
@@ -11,39 +46,29 @@
         </CardHeaderContent>
     </MudCardHeader>
     <MudCardContent>
-        <MudTextField @bind-Value="objDef.ObjName" Label="Object Name" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+        <MudTextField Required="true" @bind-Value="objDef.ObjName" Label="Object Name" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+        <MudItem xs="12" sm="6" md="4">
+            <MudSelect Label="Object type" @bind-Value="objDef.ObjTypeId">
+                <MudSelectItem T="int" Value="@(10)">table</MudSelectItem>
+                <MudSelectItem T="int" Value="@(20)">view</MudSelectItem>
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="4">
+            <MudSelect Label="Parent object" @bind-Value="objDef.ParentObjId">
+                <MudSelectItem T="int" Value="@(-1)">unknown</MudSelectItem>
+            </MudSelect>
+        </MudItem>
         <br />
         <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Save">Save</MudButton>
     </MudCardContent>
 </MudCard>
-<br />
-<MudTable Elevation="25" Items="GetObjDefs()" Filter="new Func<ObjDef, bool>(Search)" @bind-Obj_def="objDef">
-    <ToolBarContent>
-        <MudText Typo="Typo.h6">objDef</MudText>
-        <MudToolBarSpacer />
-        <MudTextField @bind-Value="searchString" Placeholder="Search for object definition..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-    </ToolBarContent>
-    <HeaderContent>
-        <MudTh>Parent object</MudTh>
-        <MudTh>Object name</MudTh>
-        <MudTh>Object type</MudTh>
-        <MudTh>Actions</MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Id">@context.Id</MudTd>
-        <MudTd DataLabel="ObjectName">@context.ObjName</MudTd>
-        <MudTd DataLabel="">
-            <MudFab @onclick="@(()=>Edit(@context.Id))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
-            <MudFab @onclick="@(()=>Delete(@context.Id))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
-        </MudTd>
-    </RowTemplate>
-</MudTable>
 
 @code{
     private bool hover = false;
     private string searchString = "";
 
     private ObjDef objDef = new ObjDef();
+
     private List<ObjDef> objDefs = new List<ObjDef>();
 
     protected override async Task OnInitializedAsync()
@@ -58,8 +83,9 @@
     }
     private bool Search(ObjDef objDef)
     {
-        if (string.IsNullOrWhiteSpace(searchString) || objDef is null  ) return true;
-        try {
+        if (string.IsNullOrWhiteSpace(searchString) || objDef is null) return true;
+        try
+        {
             if (objDef.ObjName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             {
                 return true;
@@ -67,7 +93,7 @@
         }
         catch
         {
-            // eg some field is null 
+            // eg some field is null
         }
 
 
@@ -83,7 +109,7 @@
     }
     private void Edit(int id)
     {
-        objDef = objDefs.FirstOrDefault(c => c.Id == id);
+        objDef = objDefs.FirstOrDefault(c => c.ObjDefId == id);
     }
     private void Delete(int id)
     {

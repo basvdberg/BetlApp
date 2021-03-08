@@ -9,7 +9,7 @@ namespace BetlApp.Data
     {
         public ServerType()
         {
-            ObjDefs = new HashSet<ObjDef>();
+            Objs = new HashSet<Obj>();
         }
 
         public int ServerTypeId { get; set; }
@@ -18,6 +18,6 @@ namespace BetlApp.Data
         public DateTime? RecordDt { get; set; }
         public string RecordUser { get; set; }
 
-        public virtual ICollection<ObjDef> ObjDefs { get; set; }
+        public virtual ICollection<Obj> Objs { get; set; }
     }
 }

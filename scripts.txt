@@ -4,6 +4,8 @@ dotnet add package Microsoft.EntityFrameworkCore.Design
 
 dotnet ef dbcontext scaffold "Data Source=localhost;Initial Catalog=betl;Trusted_Connection=True;MultipleActiveResultSets=true" Microsoft.EntityFrameworkCore.SqlServer --output-dir Model --table static.Obj_type --table static.Server_type --table dbo.Obj_def
 
-dotnet-aspnet-codegenerator razorpage -m Obj_def -dc betlContext -udl -outDir Pages\Obj_def --referenceScriptLibraries
+dotnet-aspnet-codegenerator razorpage -m Obj_def -dc BetlContext -udl -outDir Pages\Obj_def --referenceScriptLibraries
 
 Scaffold-DbContext 'Data Source=localhost;Initial Catalog=betlApp;Trusted_Connection=True;MultipleActiveResultSets=true' Microsoft.EntityFrameworkCore.SqlServer -ContextDir DbContexts -OutputDir Data  -Force 
+
+Scaffold-DbContext 'Data Source=localhost;Initial Catalog=betl;Trusted_Connection=True;MultipleActiveResultSets=true' Microsoft.EntityFrameworkCore.SqlServer -ContextDir DbContexts -OutputDir Data  -Force 
